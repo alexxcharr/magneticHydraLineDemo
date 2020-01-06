@@ -22,24 +22,23 @@ Mapper.setSpec(\sensor1, \x, { |val| val.sin.linlin(-1, 1, 1, 10)});
 Mapper.setSpec(\sensor1, \y, { |val| val.sin.linlin(-1, 1, 1, 100)});
 Mapper.setSpec(\sensor1, \z, { |val| val.sin.linlin(-1, 1, 1, 100)});
 //:
-
 var addr = NetAddr.new("127.0.0.1", 51000);
-var	m = '/scene3';
 OSCFunc({ |msg|
 	var x, y, z;
 	#x, y, z = msg[2..]; //
-	fork{
-		addr.sendMsg(m.postln,
-			Mapper.map(x, \sensor1, \x).postln,
-			//	Mapper.map(y, \sensor1, \y),
-			//Mapper.map(z, \sensor1, \z),
-			//20.wait,
-			//	m = '/scene2',
-			//40.wait,
-			//m ='/scene3';
-			
-		);
-	};
-}, '/minibee/data', argTemplate: [1]);
 
-//:
+	addr.sendMsg(HM.m.postln,
+		Mapper.map(x, \sensor1, \x).postln,
+	);
+
+}, '/minibee/data', argTemplate: [1]);
+//:+
+3.wait;
+"setting message for hydra to scene2".postln;
+HM.m = '/scene2';
+5.wait;
+"setting message for hydra to scene3".postln;
+HM.m = '/scene3';
+//:*
+NetAddr.localAddr.sendMsg('/minibee/data', 1, 10, 20, 30);
+0.25.wait;
